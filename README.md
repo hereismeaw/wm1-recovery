@@ -18,7 +18,7 @@ It came back. Same player. Pink Floyd, even.
 
 *After. No new board.*
 
-This is a Windows app for NW-WM1A / NW-WM1Z. Thai UI, big buttons, one job at a time. It will not format your laptop.
+This is a Windows app for NW-WM1A / NW-WM1Z. Big buttons, one job at a time. It will not format your laptop.
 
 ## Run
 
@@ -38,12 +38,12 @@ Copy `dist\WM1Recovery\` anywhere, or unzip `dist\WM1Recovery-portable.zip`. Dou
 
 ## Buttons
 
-- **ตรวจเครื่อง** — stock vs Walkman One vs Preloader vs "USB works, no music"
-- **ติดตั้งไดรเวอร์ Preloader** — WinUSB for `VID 0E8D / PID 2000` so another PC can see Preloader
-- **ลบไฟล์ Walkman One** — deletes `CFW\` and `wm1a-repair.log` on the Walkman volume only
-- **กู้พาร์ติชันเพลง** — backup this unit's boot, flash a guarded repair boot, let Sony format the music partition, read it back
-- **กลับเฟิร์มสต็อก** — launches *your* StockRevert + Sony 3.02 EXEs if you have them
-- **คืน boot เดิม** — after a repair boot, put the original boot back
+- **Detect device** — stock vs Walkman One vs Preloader vs "USB works, no music"
+- **Install Preloader driver** — WinUSB for `VID 0E8D / PID 2000` so another PC can see Preloader
+- **Remove Walkman One files** — deletes `CFW\` and `wm1a-repair.log` on the Walkman volume only
+- **Repair music partition** — backup this unit's boot, flash a guarded repair boot, let Sony format the music partition, read it back
+- **Revert to stock firmware** — launches *your* StockRevert + Sony 3.02 EXEs if you have them
+- **Restore original boot** — after a repair boot, put the original boot back
 
 Preloader, USB already connected: hold Volume Down + Play, hold Power 8–10 seconds, keep the first two buttons down about ten seconds after Power.
 
