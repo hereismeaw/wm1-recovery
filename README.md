@@ -20,7 +20,11 @@ It came back. Same player. Pink Floyd, even.
 
 This is a Windows app for NW-WM1A / NW-WM1Z. Big buttons, one job at a time. It will not format your laptop.
 
-## Run
+## Download
+
+Grab **[v0.1](https://github.com/hereismeaw/wm1-recovery/releases/tag/v0.1)**. Unzip `WM1Recovery-v0.1-portable.zip`, run `WM1Recovery.exe` as Administrator. No Python. Logs stay in that folder. The WinUSB driver still installs into Windows; the app itself does not.
+
+## Run from source
 
 Need Python:
 
@@ -28,13 +32,13 @@ Need Python:
 Start-WM1-Recovery.cmd
 ```
 
-Do not want Python. Pack a portable folder (needs the local `vendor/mtk` tools on the build machine):
+Or pack a portable folder yourself (needs the local `vendor/mtk` tools on the build machine):
 
 ```bat
 pack.cmd
 ```
 
-Copy `dist\WM1Recovery\` anywhere, or unzip `dist\WM1Recovery-portable.zip`. Double-click `WM1Recovery.exe` inside. Logs and work files stay in that folder. Run it as Administrator. The WinUSB driver still installs into Windows; the app itself does not.
+Copy `dist\WM1Recovery\` anywhere, or unzip `dist\WM1Recovery-portable.zip`.
 
 ## Buttons
 
@@ -49,7 +53,7 @@ Preloader, USB already connected: hold Volume Down + Play, hold Power 8–10 sec
 
 ## What is not in this repo
 
-Dumps from a real player. `DA.bin`. `flash_tool.exe`. Walkman One. Sony firmware. If you put those on GitHub you are publishing someone else's Walkman and someone else's installer. The app downloads the Preloader flash tool when missing, or reuses `vendor/mtk` / `tools/mtk` on the build PC. StockRevert still has to come from you.
+Dumps from a real player. Walkman One. Official Sony firmware. Those stay off git. The portable release zip does ship `flash_tool.exe`, `DA.bin`, and the Preloader driver helper so someone else can actually run it. StockRevert still has to come from you.
 
 ## Tests
 
