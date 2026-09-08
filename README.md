@@ -2,7 +2,9 @@
 
 A Walkman went into a car and came back looping the Sony logo like it had seen something it could not unsee.
 
-Windows still listed it as a WALKMAN. The music drive lasted about five seconds, then vanished. Sony's official advice is to format from the player. The player would not boot far enough to format itself. That is a closed loop. This project exists because yelling at a 2016 DAP does not rewrite a FAT header.
+I took it to a Sony service centre. They said replace the board. That did not sit right. The thing still enumerated over USB. It was not a brick. It was a machine having a filesystem argument with itself.
+
+Windows still listed it as a WALKMAN. The music drive lasted about five seconds, then vanished. Official advice is to format from the player. The player would not boot far enough to format itself. That is a closed loop, and a new board is an expensive way to lose the argument. This project exists because I did not believe the motherboard was the problem.
 
 What actually happened: the music partition had been overwritten with a random PC-style MBR. USB still answered vendor queries. The flash was not dead. The firmware just refused to mount garbage and then panicked in a circle. The working fix is ugly and specific. Talk to the MediaTek Preloader, flash a temporary boot that is allowed to run Sony's own `format_contents`, then get off that boot image. If you were on Walkman One and want factory firmware, run StockRevert and the last official Sony 3.02 package after that. None of that belongs on a random `PhysicalDrive` number.
 
@@ -47,4 +49,4 @@ python -m unittest discover -v tests
 
 ## License
 
-MIT for the Python here. MediaTek flash tool, wbrt, libwdi, Walkman One, and Sony firmware keep their own licenses. If this bricks a player that was already looping a logo, well. It was looping a logo.
+MIT for the Python here. MediaTek flash tool, wbrt, libwdi, Walkman One, and Sony firmware keep their own licenses. If this bricks a player that was already looping a logo, well. It was looping a logo. The service centre still wants to sell you a board.
