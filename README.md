@@ -1,10 +1,10 @@
 # WM1 Recovery
 
-A Walkman went into a car and came back looping the Sony logo like it had seen something it could not unsee.
+My Walkman went into a car's usb and came back looping the Sony logo like it had seen something it could not unsee.
 
 I took it to a Sony service centre. They said replace the board. That did not sit right. The thing still enumerated over USB. It was not a brick. It was a machine having a filesystem argument with itself.
 
-Windows still listed it as a WALKMAN. The music drive lasted about five seconds, then vanished. Official advice is to format from the player. The player would not boot far enough to format itself. That is a closed loop, and a new board is an expensive way to lose the argument. This project exists because I did not believe the motherboard was the problem. I used whatever embedded knowledge I had, talked to the Preloader like a stubborn SoC, and pulled it back.
+Windows still listed it as a WALKMAN. The music drive lasted about five seconds, then vanished. Official advice is to format from the player. The player would not boot far enough to format itself. That is a closed loop, and a new board is an expensive way to lose the argument. This project exists because I don't believe the motherboard was the problem. I used whatever embedded knowledge I had, talked to the Preloader like a stubborn SoC, and pulled it back.
 
 ![Bootloop](docs/bootloop.jpg)
 
