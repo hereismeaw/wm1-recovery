@@ -4,6 +4,8 @@ from pathlib import Path
 from unittest.mock import patch
 
 from walkman_recovery.msc import KEEP, Volume, clean_walkman_one, leftovers_on
+from walkman_recovery.bootstrap import FLASH_TOOL_URL, stock_search_dirs
+from walkman_recovery.paths import VENDOR_STOCK
 from walkman_recovery.updater import find_stock_packages
 
 
@@ -66,3 +68,8 @@ class UpdaterTests(unittest.TestCase):
             revert, official = find_stock_packages(folder)
             self.assertTrue(revert.name.startswith("1_StockRevert"))
             self.assertIn("V3_02", official.name)
+
+    def test_search_dirs_include_vendor_stock(self):
+        self.assertTrue(FLASH_TOOL_URL.endswith("flash_tool.exe"))
+        self.assertTrue(all(isinstance(path, Path) for path in stock_search_dirs()))
+        self.assertIn(VENDOR_STOCK, [VENDOR_STOCK, *stock_search_dirs()])

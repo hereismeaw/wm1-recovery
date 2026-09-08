@@ -12,9 +12,9 @@ from walkman_recovery import __version__
 from walkman_recovery.detect import Snapshot, snapshot
 from walkman_recovery.elevate import is_admin, relaunch
 from walkman_recovery.msc import clean_walkman_one
-from walkman_recovery.paths import mtk_dir
-from walkman_recovery.recovery import RecoveryError, reboot_device, repair_contents, restore_boot
-from walkman_recovery.updater import find_stock_packages, launch
+from walkman_recovery.bootstrap import ensure_mtk_tools
+from walkman_recovery.recovery import reboot_device, repair_contents, restore_boot
+from walkman_recovery.updater import find_stock_packages, launch, locate_stock_packages
 
 BG = "#101214"
 CARD = "#1b1f24"
@@ -139,7 +139,7 @@ class App:
         if state.usb and not bits:
             bits.append(state.usb[0].split("|")[-1])
         if not state.mtk_ready:
-            bits.append("ยังไม่มี flash_tool.exe / DA.bin")
+            bits.append("จะดึง flash_tool และ DA.bin อัตโนมัติตอนกู้พาร์ติชันเพลง")
         self.detail.set("  ·  ".join(bits) if bits else "เสียบ Walkman แล้วกดตรวจเครื่อง")
         self.hint.set(state.instruction)
         self._enable()
@@ -205,17 +205,16 @@ class App:
         self._work(work)
 
     def repair(self) -> None:
-        if mtk_dir() is None:
-            messagebox.showerror("ยังไม่มีเครื่องมือแฟลช", "วาง flash_tool.exe และ DA.bin ในโฟลเดอร์ vendor\\mtk ตาม README")
-            return
         if not messagebox.askyesno(
             "กู้พาร์ติชันเพลง",
-            "ขั้นตอนนี้จะสำรอง boot ของเครื่องนี้ แล้วเขียน boot ซ่อมชั่วคราวเพื่อให้ Sony format_contents ล้างพาร์ติชันเพลง\n"
+            "ขั้นตอนนี้จะดึงเครื่องมือ Preloader ถ้ายังไม่มี แล้วสำรอง boot ของเครื่องนี้ "
+            "เขียน boot ซ่อมชั่วคราว ให้ Sony format_contents ล้างพาร์ติชันเพลง\n"
             "เพลงในเครื่องจะถูกลบ\n\nต้องเข้าโหมด Preloader ก่อน: กดค้าง Volume Down + Play แล้วกด Power 8–10 วินาที",
         ):
             return
 
         def work():
+            ensure_mtk_tools(self.write)
             self.write("รอ Preloader แล้วสำรอง/เขียน boot ซ่อม...")
             original = repair_contents(self.write, stage2=False)
             self.messages.put(("boot", original))
@@ -239,12 +238,17 @@ class App:
         self._work(work)
 
     def stock(self) -> None:
-        folder = filedialog.askdirectory(title="เลือกโฟลเดอร์ที่มี StockRevert และไฟล์ Sony 3.02")
-        if not folder:
-            return
-        revert, official = find_stock_packages(Path(folder))
+        revert, official = locate_stock_packages()
         if revert is None:
-            messagebox.showerror("ไม่พบ StockRevert", "ต้องมีไฟล์ชื่อประมาณ 1_StockRevert_Walkman_One_WM1.exe")
+            folder = filedialog.askdirectory(title="เลือกโฟลเดอร์ที่มี StockRevert และไฟล์ Sony 3.02")
+            if not folder:
+                return
+            revert, official = find_stock_packages(Path(folder))
+        if revert is None:
+            messagebox.showerror(
+                "ไม่พบ StockRevert",
+                "โปรแกรมดึงไฟล์นี้จากอินเทอร์เน็ตไม่ได้\nวาง 1_StockRevert_Walkman_One_WM1.exe และ 2_NW-WM1_V3_02.exe ใน vendor\\stockrevert",
+            )
             return
         if not messagebox.askyesno("กลับเฟิร์มสต็อก", f"จะเปิดตัวติดตั้ง:\n{revert.name}\nจากนั้นเปิด {official.name if official else 'Sony 3.02 (ถ้ามี)'}\nอย่าถอดสายระหว่างแถบอัปเดต"):
             return

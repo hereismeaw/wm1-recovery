@@ -6,6 +6,7 @@ import os
 
 ROOT = Path(__file__).resolve().parent.parent
 VENDOR_MTK = ROOT / "vendor" / "mtk"
+VENDOR_STOCK = ROOT / "vendor" / "stockrevert"
 TOOLS_MTK = ROOT / "tools" / "mtk"
 WORK = ROOT / "work"
 LOGS = ROOT / "logs"

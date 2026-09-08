@@ -5,19 +5,33 @@ from pathlib import Path
 import subprocess
 import time
 
+from walkman_recovery.bootstrap import stock_search_dirs
+
 
 def find_stock_packages(folder: Path) -> tuple[Path | None, Path | None]:
     revert = None
     official = None
+    if not folder.is_dir():
+        return None, None
     for path in folder.rglob("*.exe"):
         name = path.name.lower()
         if "stockrevert" in name and revert is None:
             revert = path
-        elif "nw-wm1" in name and "v3" in name.replace(".", "") and official is None:
-            official = path
-        elif name.endswith("v3_02.exe") or "v3.02" in name.lower():
+        elif official is None and (
+            ("nw-wm1" in name and "v3" in name.replace(".", ""))
+            or name.endswith("v3_02.exe")
+            or "v3.02" in name.lower()
+        ):
             official = path
     return revert, official
+
+
+def locate_stock_packages() -> tuple[Path | None, Path | None]:
+    for folder in stock_search_dirs():
+        revert, official = find_stock_packages(folder)
+        if revert is not None:
+            return revert, official
+    return None, None
 
 
 def launch(path: Path) -> subprocess.Popen:

@@ -36,6 +36,8 @@ vendor/mtk/*.exe
 vendor/mtk/*.bin
 vendor/mtk/*.dll
 vendor/mtk/driver/
+vendor/stockrevert/*.exe
+*NW-WM1*.exe
 
 # Local Python
 *.egg-info/

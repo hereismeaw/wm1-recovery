@@ -1,10 +1,10 @@
 # MediaTek flash tools (not shipped)
 
-This folder is empty in git. Copy these files here before using **กู้พาร์ติชันเพลง**:
+The app downloads these on first **กู้พาร์ติชันเพลง** if they are missing:
 
-- `flash_tool.exe` from [unknown321/mediatek_flash_tool](https://github.com/unknown321/mediatek_flash_tool/releases)
-- `DA.bin` from the [wbrt](https://github.com/unknown321/wbrt) release package (extract the installer)
+- `flash_tool.exe` from [unknown321/mediatek_flash_tool v0.1.7](https://github.com/unknown321/mediatek_flash_tool/releases)
+- `DA.bin` from [wbrt v1.0.9](https://github.com/unknown321/wbrt) (needs 7-Zip) or copies `tools/mtk/DA.bin` when present
 
-The recovery app also looks in `tools/mtk/` if you already have them from a local session.
+Do not commit the binaries.
 
-Do not commit those binaries.
+Walkman One StockRevert and Sony 3.02 cannot be downloaded. Put them in `vendor/stockrevert/` if you have them.

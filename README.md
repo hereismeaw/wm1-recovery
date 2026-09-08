@@ -31,21 +31,19 @@ or:
 python -m walkman_recovery
 ```
 
-## Optional flash tools
+## Preloader tools
 
-For **กู้พาร์ติชันเพลง** copy into `vendor/mtk/`:
-
-- [`flash_tool.exe`](https://github.com/unknown321/mediatek_flash_tool/releases)
-- `DA.bin` from [wbrt](https://github.com/unknown321/wbrt)
+Clicking **กู้พาร์ติชันเพลง** downloads `flash_tool.exe` (and `DA.bin` via wbrt + 7-Zip) into `vendor/mtk/` when they are missing. Existing files in `tools/mtk/` are reused. These binaries stay gitignored.
 
 Preloader entry (USB already connected): hold **Volume Down + Play**, then hold **Power 8–10 seconds**. Keep the first two buttons down about 10 seconds after releasing Power.
 
 ## Stock firmware
 
-1. Copy the `StockRevert` folder off the player (Walkman One puts it in `CFW\StockRevert`) or keep the ZIP you downloaded from MrWalkman.
-2. Connect the player in mass-storage mode.
-3. Click **กลับเฟิร์มสต็อก** and point the app at that folder.
-4. Watch the update bar on the player. Do not unplug.
+Walkman One / Sony installers are **not** downloaded. If you have them, put both EXEs in `vendor/stockrevert/` (or leave them in `research/stockrevert/`). The app picks them up automatically; otherwise it asks for a folder.
+
+1. Connect the player in mass-storage mode.
+2. Click **กลับเฟิร์มสต็อก**.
+3. Watch the update bar on the player. Do not unplug.
 
 ## Tests
 
