@@ -13,6 +13,7 @@ from walkman_recovery.detect import Snapshot, snapshot
 from walkman_recovery.elevate import is_admin, relaunch
 from walkman_recovery.msc import clean_walkman_one
 from walkman_recovery.bootstrap import ensure_mtk_tools
+from walkman_recovery.driver import install_preloader_driver
 from walkman_recovery.recovery import reboot_device, repair_contents, restore_boot
 from walkman_recovery.updater import find_stock_packages, launch, locate_stock_packages
 
@@ -77,6 +78,7 @@ class App:
         self.buttons = {}
         specs = [
             ("detect", "ตรวจเครื่อง", self.refresh),
+            ("driver", "ติดตั้งไดรเวอร์ Preloader", self.install_driver),
             ("clean", "ลบไฟล์ Walkman One", self.clean),
             ("repair", "กู้พาร์ติชันเพลง", self.repair),
             ("stock", "กลับเฟิร์มสต็อก", self.stock),
@@ -85,11 +87,12 @@ class App:
         for i, (key, label, cmd) in enumerate(specs):
             btn = tk.Button(
                 grid, text=label, command=cmd, bg=BTN, fg=TEXT, activebackground=ACCENT,
-                activeforeground=TEXT, relief="flat", font=("Segoe UI", 12, "bold"),
-                padx=12, pady=12, cursor="hand2",
+                activeforeground=TEXT, relief="flat", font=("Segoe UI", 11, "bold"),
+                padx=10, pady=12, cursor="hand2",
             )
-            btn.grid(row=0, column=i, sticky="ew", padx=4, pady=4)
-            grid.columnconfigure(i, weight=1)
+            row, col = divmod(i, 3)
+            btn.grid(row=row, column=col, sticky="ew", padx=4, pady=4)
+            grid.columnconfigure(col, weight=1)
             self.buttons[key] = btn
 
         tk.Label(self.root, text="บันทึกการทำงาน", fg=MUTED, bg=BG, font=("Segoe UI", 10)).pack(anchor="w", padx=22, pady=(12, 0))
@@ -148,6 +151,7 @@ class App:
         state = self.state
         can = not self.busy
         self.buttons["detect"].configure(state="normal" if can else "disabled")
+        self.buttons["driver"].configure(state="normal" if can else "disabled")
         clean = can and state and state.walkman_volume and state.walkman_volume.has_cfw
         self.buttons["clean"].configure(state="normal" if clean else "disabled")
         repair = can and state and state.mode in {"preloader", "no_media", "missing", "usb"}
@@ -176,6 +180,19 @@ class App:
                 self.messages.put(("busy", False))
 
         threading.Thread(target=runner, daemon=True).start()
+
+    def install_driver(self) -> None:
+        if not messagebox.askyesno(
+            "ติดตั้งไดรเวอร์ Preloader",
+            "จะติดตั้ง WinUSB สำหรับ MediaTek Preloader (VID 0E8D / PID 2000) บนเครื่องนี้\nต้องใช้สิทธิ์ Administrator",
+        ):
+            return
+
+        def work():
+            ensure_mtk_tools(self.write)
+            install_preloader_driver(self.write)
+
+        self._work(work)
 
     def refresh(self) -> None:
         def work():

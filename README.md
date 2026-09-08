@@ -1,49 +1,43 @@
 # WM1 Recovery
 
-Windows app that recovers a Sony **NW-WM1A / NW-WM1Z** after a contents-partition bootloop, and can take a Walkman One install back to stock firmware.
+A Walkman went into a car and came back looping the Sony logo like it had seen something it could not unsee.
 
-Python 3.13, standard library only. Thai-first UI, large buttons, one action at a time.
+Windows still listed it as a WALKMAN. The music drive lasted about five seconds, then vanished. Sony's official advice is to format from the player. The player would not boot far enough to format itself. That is a closed loop. This project exists because yelling at a 2016 DAP does not rewrite a FAT header.
 
-## What it does
+What actually happened: the music partition had been overwritten with a random PC-style MBR. USB still answered vendor queries. The flash was not dead. The firmware just refused to mount garbage and then panicked in a circle. The working fix is ugly and specific. Talk to the MediaTek Preloader, flash a temporary boot that is allowed to run Sony's own `format_contents`, then get off that boot image. If you were on Walkman One and want factory firmware, run StockRevert and the last official Sony 3.02 package after that. None of that belongs on a random `PhysicalDrive` number.
 
-- Detects Walkman USB, Preloader, stock vs Walkman One, and whether the music volume is mounted
-- Deletes leftover Walkman One files (`CFW\`, `wm1a-repair.log`) on the Walkman disk only
-- Optionally dumps this device’s partition map and boot, flashes a **temporary** repair boot, lets Sony’s own `format_contents` rebuild the music partition, then restores the original boot after a verified read-back
-- Launches **your** StockRevert + official Sony 3.02 installers (those files are not included)
-
-It never selects a disk by `PhysicalDrive` number. SCSI and cleanup run only on `SONY` / `WALKMAN` / USB.
-
-## What is not in git
-
-Device dumps, boot images, `DA.bin`, `flash_tool.exe`, StockRevert, and Sony firmware EXEs stay on your PC. Publishing them would leak a specific player and third-party firmware.
+This is a Windows app for NW-WM1A / NW-WM1Z. Thai UI, big buttons, one job at a time. It will not format your laptop.
 
 ## Run
 
-Windows 10/11, Python 3, Administrator recommended:
+Need Python:
 
 ```bat
 Start-WM1-Recovery.cmd
 ```
 
-or:
+Do not want Python. Build a single exe (needs the local `vendor/mtk` tools on the build machine):
 
 ```bat
-python -m walkman_recovery
+pack.cmd
 ```
 
-## Preloader tools
+Then double-click `dist\WM1Recovery.exe`. First launch should be as Administrator.
 
-Clicking **กู้พาร์ติชันเพลง** downloads `flash_tool.exe` (and `DA.bin` via wbrt + 7-Zip) into `vendor/mtk/` when they are missing. Existing files in `tools/mtk/` are reused. These binaries stay gitignored.
+## Buttons
 
-Preloader entry (USB already connected): hold **Volume Down + Play**, then hold **Power 8–10 seconds**. Keep the first two buttons down about 10 seconds after releasing Power.
+- **ตรวจเครื่อง** — stock vs Walkman One vs Preloader vs "USB works, no music"
+- **ติดตั้งไดรเวอร์ Preloader** — WinUSB for `VID 0E8D / PID 2000` so another PC can see Preloader
+- **ลบไฟล์ Walkman One** — deletes `CFW\` and `wm1a-repair.log` on the Walkman volume only
+- **กู้พาร์ติชันเพลง** — backup this unit's boot, flash a guarded repair boot, let Sony format the music partition, read it back
+- **กลับเฟิร์มสต็อก** — launches *your* StockRevert + Sony 3.02 EXEs if you have them
+- **คืน boot เดิม** — after a repair boot, put the original boot back
 
-## Stock firmware
+Preloader, USB already connected: hold Volume Down + Play, hold Power 8–10 seconds, keep the first two buttons down about ten seconds after Power.
 
-Walkman One / Sony installers are **not** downloaded. If you have them, put both EXEs in `vendor/stockrevert/` (or leave them in `research/stockrevert/`). The app picks them up automatically; otherwise it asks for a folder.
+## What is not in this repo
 
-1. Connect the player in mass-storage mode.
-2. Click **กลับเฟิร์มสต็อก**.
-3. Watch the update bar on the player. Do not unplug.
+Dumps from a real player. `DA.bin`. `flash_tool.exe`. Walkman One. Sony firmware. If you put those on GitHub you are publishing someone else's Walkman and someone else's installer. The app downloads the Preloader flash tool when missing, or reuses `vendor/mtk` / `tools/mtk` on the build PC. StockRevert still has to come from you.
 
 ## Tests
 
@@ -51,13 +45,6 @@ Walkman One / Sony installers are **not** downloaded. If you have them, put both
 python -m unittest discover -v tests
 ```
 
-## Safety
-
-- Music on the contents partition is erased by format / StockRevert
-- Boot is written only after a same-device backup and a full SHA-256 read-back
-- PC disks are never targeted
-- You must supply Sony / MrWalkman installers yourself
-
 ## License
 
-MIT for this repository’s Python. MediaTek flash tool, wbrt, Walkman One, and Sony firmware remain under their own terms.
+MIT for the Python here. MediaTek flash tool, wbrt, libwdi, Walkman One, and Sony firmware keep their own licenses. If this bricks a player that was already looping a logo, well. It was looping a logo.

@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 from walkman_recovery.msc import KEEP, Volume, clean_walkman_one, leftovers_on
 from walkman_recovery.bootstrap import FLASH_TOOL_URL, stock_search_dirs
+from walkman_recovery.driver import PRELOADER_PID, PRELOADER_VID, wdi_command
 from walkman_recovery.paths import VENDOR_STOCK
 from walkman_recovery.updater import find_stock_packages
 
@@ -73,3 +74,10 @@ class UpdaterTests(unittest.TestCase):
         self.assertTrue(FLASH_TOOL_URL.endswith("flash_tool.exe"))
         self.assertTrue(all(isinstance(path, Path) for path in stock_search_dirs()))
         self.assertIn(VENDOR_STOCK, [VENDOR_STOCK, *stock_search_dirs()])
+
+    def test_wdi_command_targets_preloader(self):
+        cmd = wdi_command(Path("wdi-simple.exe"), Path("usb_device.inf"))
+        self.assertIn(PRELOADER_VID, cmd)
+        self.assertIn(PRELOADER_PID, cmd)
+        self.assertEqual(cmd[cmd.index("-t") + 1], "0")
+        self.assertIn("usb_device.inf", cmd[-1])

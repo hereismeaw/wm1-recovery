@@ -7,7 +7,7 @@ import subprocess
 import urllib.request
 from pathlib import Path
 
-from walkman_recovery.paths import ROOT, TOOLS_MTK, VENDOR_MTK, VENDOR_STOCK, mtk_dir
+from walkman_recovery.paths import BUNDLE_MTK, ROOT, TOOLS_MTK, VENDOR_MTK, VENDOR_STOCK, mtk_dir
 
 FLASH_TOOL_URL = "https://github.com/unknown321/mediatek_flash_tool/releases/download/v0.1.7/flash_tool.exe"
 FLASH_TOOL_SHA256 = "84ca8686154afb51aef65e2460e030dd8d6cdf02690bbc9edb35d5fbc693c45f"
@@ -45,12 +45,20 @@ def _copy_if_present(src: Path, dest: Path, log) -> bool:
 
 
 def ensure_mtk_tools(log=print) -> Path:
-    existing = mtk_dir()
-    if existing is not None:
-        return existing
     VENDOR_MTK.mkdir(parents=True, exist_ok=True)
     tool = VENDOR_MTK / "flash_tool.exe"
     da = VENDOR_MTK / "DA.bin"
+    _copy_if_present(BUNDLE_MTK / "flash_tool.exe", tool, log)
+    _copy_if_present(BUNDLE_MTK / "DA.bin", da, log)
+    _copy_if_present(BUNDLE_MTK / "wdi-simple.exe", VENDOR_MTK / "wdi-simple.exe", log)
+    bundled_driver = BUNDLE_MTK / "driver"
+    if bundled_driver.is_dir() and not (VENDOR_MTK / "driver" / "usb_device.inf").is_file():
+        shutil.copytree(bundled_driver, VENDOR_MTK / "driver", dirs_exist_ok=True)
+    existing = mtk_dir()
+    if existing is not None and (VENDOR_MTK / "flash_tool.exe").is_file() and (VENDOR_MTK / "DA.bin").is_file():
+        return VENDOR_MTK
+    if existing is not None:
+        return existing
     if not tool.is_file():
         if not _copy_if_present(TOOLS_MTK / "flash_tool.exe", tool, log):
             _download(FLASH_TOOL_URL, tool, log)
@@ -78,10 +86,5 @@ def ensure_mtk_tools(log=print) -> Path:
 
 
 def stock_search_dirs() -> list[Path]:
-    dirs = [
-        VENDOR_STOCK,
-        ROOT / "research" / "stockrevert",
-        ROOT,
-        TOOLS_MTK.parent,
-    ]
+    dirs = [VENDOR_STOCK, ROOT, TOOLS_MTK.parent]
     return [path for path in dirs if path.is_dir()]
