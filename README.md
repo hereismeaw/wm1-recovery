@@ -16,13 +16,13 @@ Need Python:
 Start-WM1-Recovery.cmd
 ```
 
-Do not want Python. Build a single exe (needs the local `vendor/mtk` tools on the build machine):
+Do not want Python. Pack a portable folder (needs the local `vendor/mtk` tools on the build machine):
 
 ```bat
 pack.cmd
 ```
 
-Then double-click `dist\WM1Recovery.exe`. First launch should be as Administrator.
+Copy `dist\WM1Recovery\` anywhere, or unzip `dist\WM1Recovery-portable.zip`. Double-click `WM1Recovery.exe` inside. Logs and work files stay in that folder. Run it as Administrator. The WinUSB driver still installs into Windows; the app itself does not.
 
 ## Buttons
 

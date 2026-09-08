@@ -28,9 +28,8 @@ pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.datas,
     [],
+    exclude_binaries=True,
     name="WM1Recovery",
     debug=False,
     bootloader_ignore_signals=False,
@@ -38,4 +37,12 @@ exe = EXE(
     upx=False,
     console=False,
     disable_windowed_traceback=False,
+)
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.datas,
+    strip=False,
+    upx=False,
+    name="WM1Recovery",
 )

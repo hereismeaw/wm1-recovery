@@ -43,5 +43,6 @@ vendor/stockrevert/*.exe
 *.egg-info/
 dist/
 build/
+*.zip
 pack/
 *.spec.bak

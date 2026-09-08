@@ -14,9 +14,7 @@ def resource_root() -> Path:
 
 def data_root() -> Path:
     if getattr(sys, "frozen", False):
-        root = Path(os.environ.get("LOCALAPPDATA", str(Path.home()))) / "WM1Recovery"
-        root.mkdir(parents=True, exist_ok=True)
-        return root
+        return Path(sys.executable).resolve().parent
     return Path(__file__).resolve().parent.parent
 
 
